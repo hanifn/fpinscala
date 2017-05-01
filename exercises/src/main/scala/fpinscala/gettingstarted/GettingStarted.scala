@@ -147,7 +147,25 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = {
+    def loop(n: Int, prev: A, curr: A): Boolean = {
+      if (n >= as.length - 1) true
+      else if (gt(prev, curr)) false
+      else loop(n + 1, as(n), as(n + 1))
+    }
+
+    loop(1, as(0), as(1))
+  }
+
+  def main(args: Array[String]): Unit = {
+    val arr = Array(1, 2, 3, 4, 5)
+    println("Expected for Array(1, 2, 3 ,4, 5) : True")
+    printf("Result: %b\n", this.isSorted(arr, (a: Int, b: Int) => { a > b }))
+
+    val arr2 = Array(1, 4, 3, 2, 5)
+    println("Expected for Array(1, 4, 3, 2, 5) : False")
+    printf("Result: %b\n", this.isSorted(arr2, (a: Int, b: Int) => { a > b }))
+  }
 
   // Polymorphic functions are often so constrained by their type
   // that they only have one implementation! Here's an example:
@@ -160,13 +178,13 @@ object PolymorphicFunctions {
   // Note that `=>` associates to the right, so we could
   // write the return type as `A => B => C`
   def curry[A,B,C](f: (A, B) => C): A => (B => C) =
-    ???
+    a => b => f(a, b)
 
   // NB: The `Function2` trait has a `curried` method already
 
   // Exercise 4: Implement `uncurry`
   def uncurry[A,B,C](f: A => B => C): (A, B) => C =
-    ???
+    (a, b) => f(a)(b)
 
   /*
   NB: There is a method on the `Function` object in the standard library,
@@ -181,5 +199,5 @@ object PolymorphicFunctions {
   // Exercise 5: Implement `compose`
 
   def compose[A,B,C](f: B => C, g: A => B): A => C =
-    ???
+    a => f(g(a))
 }
